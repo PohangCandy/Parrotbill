@@ -35,7 +35,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* Splash;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, Category = ID)
 	int32 ID;
 
 };
