@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ArenaBattle.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Fountain.generated.h"
 
@@ -10,6 +11,8 @@ UCLASS()
 class ARENABATTLE_API AFountain : public AActor
 {
 	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere)
+	URotatingMovementComponent* Movement;
 	
 public:	
 	// Sets default values for this actor's properties
