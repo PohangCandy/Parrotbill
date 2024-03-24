@@ -20,6 +20,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+
 //protected:
 //	virtual void SetupInputComponent() override;
 //
