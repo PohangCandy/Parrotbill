@@ -18,7 +18,19 @@ AABCharacter::AABCharacter()
 	SpringArm->TargetArmLength = 400.0f;
 	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
-	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT(""));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Cardboard.SK_CharM_Cardboard"));
+	if (SK_CARDBOARD.Succeeded())
+	{
+		GetMesh()->SetSkeletalMesh(SK_CARDBOARD.Object);
+	}
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	static ConstructorHelpers::FClassFinder<UAnimInstance> WARRIOR_ANIM(TEXT("/Game/Animations/WarriorAnimBlueprint.WarriorAnimBlueprint_C"));
+	if (WARRIOR_ANIM.Succeeded())
+	{
+		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -40,15 +52,17 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AABCharacter::UpDown);
+	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AABCharacter::LeftRight);
 }
 
 void AABCharacter::UpDown(float NewAxisValue)
 {
-
+	AddMovementInput(GetActorForwardVector(), NewAxisValue);
 }
 
 void AABCharacter::LeftRight(float NewAxisValue)
 {
-
+	AddMovementInput(GetActorRightVector(), NewAxisValue);
 }
 
