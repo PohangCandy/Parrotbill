@@ -33,6 +33,9 @@ AABCharacter::AABCharacter()
 
 	SetControlMode(EcontrolMode::DIABLO);
 
+	ArmLengthSpeed = 3.0f;
+	ArmRotationSpeed = 3.0f;
+
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +52,9 @@ void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
 	switch (NewControlMode)
 	{
 	case AABCharacter::EcontrolMode::GTA:
-		SpringArm->TargetArmLength = 450.0f;
-		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+		//SpringArm->TargetArmLength = 450.0f;
+		//SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+		ArmLengthTo = 450.0f;
 		SpringArm->bUsePawnControlRotation = true;
 		SpringArm->bInheritPitch = true;
 		SpringArm->bInheritRoll = true;
@@ -62,8 +66,10 @@ void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		break;
 	case AABCharacter::EcontrolMode::DIABLO:
-		SpringArm->TargetArmLength = 800.0f;
-		SpringArm->SetRelativeRotation(FRotator(-45.0f,0.0f,0.0f));
+		//SpringArm->TargetArmLength = 800.0f;
+		//SpringArm->SetRelativeRotation(FRotator(-45.0f,0.0f,0.0f));
+		ArmLengthTo = 800.0f;
+		ArmRotationTo = FRotator(-45.0f, 0.0f, 0.0f);
 		SpringArm->bUsePawnControlRotation = false; // camera rotate by pawn not just by mouse x which is belong to control rotate
 		SpringArm->bInheritPitch = false;
 		SpringArm->bInheritRoll = false;
@@ -83,7 +89,16 @@ void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
 void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
+	switch (CurrentControlMode)
+	{
+	case EcontrolMode::DIABLO:
+		SpringArm->GetRelativeRotation() = FMath::RInterpTo(SpringArm->GetRelativeRotation(), ArmRotationTo, DeltaTime, ArmRotationSpeed);
+		break;
+	}
+
+
 	switch (CurrentControlMode)
 	{
 	case EcontrolMode::DIABLO:
@@ -101,10 +116,14 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAction(TEXT("ViewChange"), EInputEvent::IE_Pressed, this, &AABCharacter::ViewChange);
+
 	PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AABCharacter::UpDown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AABCharacter::LeftRight);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AABCharacter::Turn);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AABCharacter::LookUp);
+
+
 }
 
 void AABCharacter::UpDown(float NewAxisValue)
@@ -149,6 +168,21 @@ void AABCharacter::LookUp(float NewAxisValue)
 	{
 	case AABCharacter::EcontrolMode::GTA:
 		AddControllerPitchInput(NewAxisValue);
+		break;
+	}
+}
+
+void AABCharacter::ViewChange()
+{
+	switch (CurrentControlMode)
+	{
+	case EcontrolMode::GTA:
+		GetController()->SetControlRotation(GetActorRotation());
+		SetControlMode(EcontrolMode::DIABLO);
+		break;
+	case EcontrolMode::DIABLO:
+		GetController()->SetControlRotation(SpringArm->GetRelativeRotation());
+		SetControlMode(EcontrolMode::GTA);
 		break;
 	}
 }
