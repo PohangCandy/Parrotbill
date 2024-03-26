@@ -58,6 +58,7 @@ void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
 		SpringArm->bDoCollisionTest = true;
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		break;
 	case AABCharacter::EcontrolMode::DIABLO:
@@ -68,9 +69,10 @@ void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
 		SpringArm->bInheritRoll = false;
 		SpringArm->bInheritYaw = false;
 		SpringArm->bDoCollisionTest = false; //camera can hide in actor like a wall
-		bUseControllerRotationYaw = true; // Rotate belong to camera rotate
-		break;
-	default:
+		bUseControllerRotationYaw = false; // Rotate belong to camera rotate
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->bUseControllerDesiredRotation = true; //make rotate smoothly
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 		break;
 	}
 
@@ -115,27 +117,39 @@ void AABCharacter::UpDown(float NewAxisValue)
 	case AABCharacter::EcontrolMode::DIABLO:
 		DirectionToMove.X = NewAxisValue;
 		break;
-	default:
-		break;
 	}
 }
 
 void AABCharacter::LeftRight(float NewAxisValue)
 {
-	//switch (CurrentControlMode)
-	//{
-	//	
-	//}
-	
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EcontrolMode::GTA:
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), NewAxisValue);
+		break;
+	case AABCharacter::EcontrolMode::DIABLO:
+		DirectionToMove.Y = NewAxisValue;
+		break;
+	}
 }
 
 void AABCharacter::Turn(float NewAxisValue)
 {
-	AddControllerYawInput(NewAxisValue);
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EcontrolMode::GTA:
+		AddControllerYawInput(NewAxisValue);
+		break;
+	}
 }
 
 void AABCharacter::LookUp(float NewAxisValue)
 {
-	AddControllerPitchInput(NewAxisValue);
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EcontrolMode::GTA:
+		AddControllerPitchInput(NewAxisValue);
+		break;
+	}
 }
 
