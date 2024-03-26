@@ -31,6 +31,8 @@ AABCharacter::AABCharacter()
 		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
 	}
 
+	SetControlMode(EcontrolMode::DIABLO);
+
 }
 
 // Called when the game starts or when spawned
@@ -40,11 +42,56 @@ void AABCharacter::BeginPlay()
 	
 }
 
+void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
+{
+	CurrentControlMode = NewControlMode;
+
+	switch (NewControlMode)
+	{
+	case AABCharacter::EcontrolMode::GTA:
+		SpringArm->TargetArmLength = 450.0f;
+		SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
+		SpringArm->bUsePawnControlRotation = true;
+		SpringArm->bInheritPitch = true;
+		SpringArm->bInheritRoll = true;
+		SpringArm->bInheritYaw = true;
+		SpringArm->bDoCollisionTest = true;
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+		break;
+	case AABCharacter::EcontrolMode::DIABLO:
+		SpringArm->TargetArmLength = 800.0f;
+		SpringArm->SetRelativeRotation(FRotator(-45.0f,0.0f,0.0f));
+		SpringArm->bUsePawnControlRotation = false; // camera rotate by pawn not just by mouse x which is belong to control rotate
+		SpringArm->bInheritPitch = false;
+		SpringArm->bInheritRoll = false;
+		SpringArm->bInheritYaw = false;
+		SpringArm->bDoCollisionTest = false; //camera can hide in actor like a wall
+		bUseControllerRotationYaw = true; // Rotate belong to camera rotate
+		break;
+	default:
+		break;
+	}
+
+}
+
+
 // Called every frame
 void AABCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	switch (CurrentControlMode)
+	{
+	case EcontrolMode::DIABLO:
+		if (DirectionToMove.SizeSquared() > 0.0f)
+		{
+			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
+			AddMovementInput(DirectionToMove);
+		}
+		break;
+	}
 }
 
 // Called to bind functionality to input
@@ -60,12 +107,26 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AABCharacter::UpDown(float NewAxisValue)
 {
-	AddMovementInput(GetActorForwardVector(), NewAxisValue);
+	switch (CurrentControlMode)
+	{
+	case AABCharacter::EcontrolMode::GTA:
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::X), NewAxisValue);
+		break;
+	case AABCharacter::EcontrolMode::DIABLO:
+		DirectionToMove.X = NewAxisValue;
+		break;
+	default:
+		break;
+	}
 }
 
 void AABCharacter::LeftRight(float NewAxisValue)
 {
-	AddMovementInput(GetActorRightVector(), NewAxisValue);
+	//switch (CurrentControlMode)
+	//{
+	//	
+	//}
+	
 }
 
 void AABCharacter::Turn(float NewAxisValue)

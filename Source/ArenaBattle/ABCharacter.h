@@ -19,6 +19,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	enum class EcontrolMode
+	{
+		GTA,
+		DIABLO
+	};
+
+	void SetControlMode(EcontrolMode NewControlMode);
+	EcontrolMode CurrentControlMode = EcontrolMode::GTA;
+	FVector DirectionToMove = FVector::ZeroVector;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
