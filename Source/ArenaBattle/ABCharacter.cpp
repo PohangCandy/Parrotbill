@@ -7,6 +7,7 @@
 // Sets default values
 AABCharacter::AABCharacter()
 {
+	IsAttacking = false;
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
@@ -113,6 +114,15 @@ void AABCharacter::Tick(float DeltaTime)
 	}
 }
 
+void AABCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	ABAnim = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	ABCHECK(ABAnim != nullptr);
+
+	ABAnim->OnMontageEnded.AddDynamic(this, &AABCharacter::OnAttackMontageEnded);
+}
+
 // Called to bind functionality to input
 void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -193,10 +203,18 @@ void AABCharacter::ViewChange()
 
 void AABCharacter::Attack()
 {
-	auto AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	if (IsAttacking) return;
 
-	if (nullptr == AnimInstance) return;
-
-	AnimInstance->PlayAttackMontage();
+	ABAnim->PlayAttackMontage();
+	IsAttacking = true;
 }
+
+void AABCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	ABLOG_S(Warning);
+	ABCHECK(IsAttacking);
+	IsAttacking = false;
+}
+
+
 
