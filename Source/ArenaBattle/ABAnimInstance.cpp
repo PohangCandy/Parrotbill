@@ -34,3 +34,8 @@ void UABAnimInstance::PlayAttackMontage()
 {
 	Montage_Play(AttackMontage, 1.0f);
 }
+
+void UABAnimInstance::AnimNotify_AttackHitCheck()
+{
+	ABLOG_S(Warning);
+}
