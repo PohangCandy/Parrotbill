@@ -57,6 +57,7 @@ private:
 	void Attack();
 	void AttackStartComboState();
 	void AttackEndComboState();
+	void AttackCheck();
 
 
 	UFUNCTION()
