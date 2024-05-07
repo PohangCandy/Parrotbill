@@ -9,6 +9,7 @@
 // Sets default values
 AABCharacter::AABCharacter()
 {
+	ABLOG_S(Warning);
 	IsAttacking = false;
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -134,6 +135,7 @@ void AABCharacter::Tick(float DeltaTime)
 
 void AABCharacter::PostInitializeComponents()
 {
+	ABLOG_S(Warning);
 	Super::PostInitializeComponents();
 	ABAnim = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
 	ABCHECK(ABAnim != nullptr);

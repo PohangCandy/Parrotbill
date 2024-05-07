@@ -18,6 +18,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Box)
@@ -25,4 +26,18 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Box)
 	UStaticMeshComponent* Box;
+
+public:
+	UPROPERTY(EditInstanceOnly, Category = Box)
+	TSubclassOf<class AABWeapon> WeaponItemClass;
+
+	UPROPERTY(EditInstanceOnly, Category = Box)
+	class AABWeapon *ItemWeapon;
+
+private:
+	UFUNCTION()
+	void onCharacterOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
+
 };
