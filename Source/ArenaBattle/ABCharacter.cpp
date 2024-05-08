@@ -57,14 +57,6 @@ AABCharacter::AABCharacter()
 void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FName WeaponSocket(TEXT("hand_rSocket"));
-	auto CurWeapon = GetWorld()->SpawnActor<AABWeapon>(FVector::ZeroVector, FRotator::ZeroRotator);\
-		if (nullptr != CurWeapon)
-		{
-			CurWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
-		}
-	
 }
 
 void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
@@ -186,6 +178,24 @@ void AABCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AABCharacter::LookUp);
 
 
+}
+
+void AABCharacter::SetWeapon(AABWeapon* NewWeapon)
+{
+	ABCHECK(nullptr != NewWeapon && nullptr == CurrentWeapon);
+
+	FName WeaponSocket(TEXT("hand_rSocket"));
+		if (nullptr != NewWeapon)
+		{
+			NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
+			NewWeapon->SetOwner(this);
+			CurrentWeapon = NewWeapon;
+		}
+}
+
+bool AABCharacter::CanSetWeapon()
+{
+	return (CurrentWeapon == nullptr);
 }
 
 void AABCharacter::UpDown(float NewAxisValue)

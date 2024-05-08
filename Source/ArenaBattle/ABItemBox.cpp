@@ -3,6 +3,7 @@
 
 #include "ABItemBox.h"
 #include "ABWeapon.h"
+#include "ABCharacter.h"
 
 // Sets default values
 AABItemBox::AABItemBox()
@@ -12,9 +13,11 @@ AABItemBox::AABItemBox()
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGER"));
 	Box = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BOX"));
+	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 
 	RootComponent = Trigger;
 	Box->SetupAttachment(RootComponent);
+	Effect->SetupAttachment(RootComponent);
 
 
 	Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));
@@ -30,8 +33,14 @@ AABItemBox::AABItemBox()
 	Box->SetCollisionProfileName(TEXT("NoCollision"));
 	ABLOG_S(Warning);
 	WeaponItemClass = AABWeapon::StaticClass();
-	ItemWeapon = Cast<AABWeapon>(StaticClass());
+	/*ItemWeapon = Cast<AABWeapon>(StaticClass());*/
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_CHESTOPEN(TEXT("/Game/InfinityBladeGrassLands/Effects/FX_Treasure/Chest/P_TreasureChest_Open_Mesh.P_TreasureChest_Open_Mesh"));
+	if (P_CHESTOPEN.Succeeded())
+	{
+		Effect->SetTemplate(P_CHESTOPEN.Object);
+		Effect->bAutoActivate = false;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -52,7 +61,29 @@ void AABItemBox::PostInitializeComponents()
 
 void AABItemBox::onCharacterOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABLOG_S(Warning);
+	auto ABCharacter = Cast<AABCharacter>(Other);
+	ABCHECK(nullptr != ABCharacter);
+	if (nullptr != ABCharacter && nullptr != WeaponItemClass)
+	{
+		if (ABCharacter->CanSetWeapon())
+		{
+			auto NewWeapon = GetWorld()->SpawnActor<AABWeapon>(WeaponItemClass, FVector::ZeroVector, FRotator::ZeroRotator);
+			ABCharacter->SetWeapon(NewWeapon);
+			Effect->Activate(true);
+			Box->SetHiddenInGame(true, true);
+			SetActorEnableCollision(false);
+			Effect->OnSystemFinished.AddDynamic(this, &AABItemBox::OnEffectFinished);
+		}
+		else
+		{
+			ABLOG(Warning, TEXT("%s can't equip weapon currently."), *ABCharacter->GetName());
+		}
+	}
+}
+
+void AABItemBox::OnEffectFinished(UParticleSystemComponent* PSystem)
+{
+	Destroy();
 }
 
 
