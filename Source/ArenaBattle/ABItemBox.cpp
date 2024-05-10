@@ -32,7 +32,7 @@ AABItemBox::AABItemBox()
 	Trigger->SetCollisionProfileName(TEXT("ItemBox"));
 	Box->SetCollisionProfileName(TEXT("NoCollision"));
 	ABLOG_S(Warning);
-	WeaponItemClass = AABWeapon::StaticClass();
+	//WeaponItemClass = AABWeapon::StaticClass();
 	/*ItemWeapon = Cast<AABWeapon>(StaticClass());*/
 
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_CHESTOPEN(TEXT("/Game/InfinityBladeGrassLands/Effects/FX_Treasure/Chest/P_TreasureChest_Open_Mesh.P_TreasureChest_Open_Mesh"));
@@ -55,8 +55,46 @@ void AABItemBox::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AABItemBox::onCharacterOverlap);
 	ABLOG_S(Warning);
-	//WeaponItemClass = AABWeapon::StaticClass();
+	/*WeaponItemClass = AABWeapon::StaticClass();*/
 	//ItemWeapon = Cast<AABWeapon>(StaticClass());
+}
+
+void AABItemBox::PostLoad()
+{
+	Super::PostLoad();
+	ABLOG_S(Warning);
+}
+
+void AABItemBox::PreRegisterAllComponents()
+{
+	Super::PreRegisterAllComponents();
+	ABLOG_S(Warning);
+}
+
+void AABItemBox::PostRegisterAllComponents()
+{
+	Super::PostRegisterAllComponents();
+	ABLOG_S(Warning);
+
+}
+
+void AABItemBox::PostActorCreated()
+{
+	Super::PostActorCreated();
+	ABLOG_S(Warning);
+}
+
+void AABItemBox::OnConstruction(const FTransform&)
+{
+	//Super::OnConstruction();
+	ABLOG_S(Warning);
+}
+
+void AABItemBox::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+	/*WeaponItemClass = AABWeapon::StaticClass();*/
+	ABLOG_S(Warning);
 }
 
 void AABItemBox::onCharacterOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -23,3 +23,9 @@ void AABGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 	ABLOG(Warning, TEXT("PostLogin End"));
 }
+
+void AABGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+	ABLOG(Warning, TEXT("InitGame"));
+}

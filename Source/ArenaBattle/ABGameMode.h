@@ -18,4 +18,6 @@ class ARENABATTLE_API AABGameMode : public AGameModeBase
 	
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	virtual void InitGame(const FString& MapName,const FString& Options,FString &ErrorMessage) override;
 };

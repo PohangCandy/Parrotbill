@@ -57,6 +57,7 @@ AABCharacter::AABCharacter()
 void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	ABLOG_S(Warning);
 }
 
 void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
@@ -161,6 +162,12 @@ float AABCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	}
 
 	return FinalDamage;
+}
+
+void AABCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	ABLOG_S(Warning);
 }
 
 // Called to bind functionality to input
@@ -348,6 +355,44 @@ void AABCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted
 	ABCHECK(CurrentCombo > 0);
 	IsAttacking = false;
 	AttackEndComboState();
+}
+
+void AABCharacter::PostLoad()
+{
+	Super::PostLoad();
+	ABLOG_S(Warning);
+}
+
+void AABCharacter::PreRegisterAllComponents()
+{
+	Super::PreRegisterAllComponents();
+	ABLOG_S(Warning);
+}
+
+void AABCharacter::PostRegisterAllComponents()
+{
+	Super::PostRegisterAllComponents();
+	ABLOG_S(Warning);
+
+}
+
+void AABCharacter::PostActorCreated()
+{
+	Super::PostActorCreated();
+	ABLOG_S(Warning);
+}
+
+void AABCharacter::OnConstruction(const FTransform&)
+{
+	//Super::OnConstruction();
+	ABLOG_S(Warning);
+}
+
+void AABCharacter::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+	/*WeaponItemClass = AABWeapon::StaticClass();*/
+	ABLOG_S(Warning);
 }
 
 
