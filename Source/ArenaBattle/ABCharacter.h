@@ -56,6 +56,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	class AABWeapon* CurrentWeapon;
 
+	UPROPERTY(VisibleAnywhere, Category = Stat)
+	class UABCharacterStatComponent* CharacterStat;
+
 	void SetWeapon(class AABWeapon* NewWeapon);
 	bool CanSetWeapon();
 
