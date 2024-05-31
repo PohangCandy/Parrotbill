@@ -60,6 +60,24 @@ float UABCharacterStatComponent::GetAttack()
 	return CurrentStatData->Attack;
 }
 
+void UABCharacterStatComponent::SetHp(float NewHp)
+{
+	CurrentHP = NewHp;
+	OnHPChanged.Broadcast();
+	if (CurrentHP < KINDA_SMALL_NUMBER)//무시 가능한 오차 범위 측정
+	{
+		CurrentHP = 0.0f;
+		OnHPIsZero.Broadcast();
+	}
+}
+
+float UABCharacterStatComponent::GetHpRatio()
+{
+	ABCHECK(CurrentStatData != nullptr, 0.0f);
+
+	return (CurrentStatData->MaxHP < KINDA_SMALL_NUMBER) ? 0.0f : (CurrentHP / CurrentStatData->MaxHP);
+}
+
 
 // Called every frame
 void UABCharacterStatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

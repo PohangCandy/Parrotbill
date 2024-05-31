@@ -7,6 +7,7 @@
 #include "ABCharacterStatComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHpIsZeroDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHpChangedDelegate);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -31,8 +32,11 @@ public:
 	void SetLevel(int newLevel);
 	void SetDamage(float NewDamage);
 	float GetAttack();
+	void SetHp(float NewHp);
+	float GetHpRatio();
 
 	FOnHpIsZeroDelegate OnHPIsZero;
+	FOnHpIsZeroDelegate OnHPChanged;
 
 private:
 	struct FABCharacterData* CurrentStatData = nullptr;
