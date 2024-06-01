@@ -4,7 +4,6 @@
 
 #include "ArenaBattle.h"
 #include "Blueprint/UserWidget.h"
-#include "ABCharacterStatComponent.h"
 #include "ABCharacterWidget.generated.h"
 
 /**
@@ -20,5 +19,12 @@ public:
 
 private:
 	TWeakObjectPtr<class UABCharacterStatComponent> currentCharacterStat;
+
+	UPROPERTY()
+	class UProgressBar* HPProgerssBar;
+
+protected:
+	virtual void NativeConstruct() override;
+	void UpdateHPWidget();
 	
 };

@@ -74,6 +74,15 @@ void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ABLOG_S(Warning);
+	auto CharacterWidget = Cast<UABCharacterWidget>(HPBarWidget->GetUserWidgetObject());
+	auto UserWidget = HPBarWidget->GetUserWidgetObject();
+	if (UserWidget != nullptr)
+	{
+		if (CharacterWidget != nullptr)
+		{
+			CharacterWidget->BindCharacterStat(CharacterStat);
+		}
+	}
 }
 
 void AABCharacter::SetControlMode(EcontrolMode NewControlMode)
@@ -170,11 +179,19 @@ void AABCharacter::PostInitializeComponents()
 		SetActorEnableCollision(false);
 		});
 
-	auto CharacterWidget = Cast<UABCharacterWidget>(HPBarWidget->GetUserWidgetObject());
-	if (CharacterWidget != nullptr)
+	/*auto CharacterWidget = Cast<UABCharacterWidget>(HPBarWidget->GetUserWidgetObject());
+	auto UserWidget = HPBarWidget->GetUserWidgetObject();
+	if (UserWidget != nullptr)
 	{
-		CharacterWidget->BindCharacterStat(CharacterStat);
-	}
+		if (CharacterWidget != nullptr)
+		{
+			CharacterWidget->BindCharacterStat(CharacterStat);
+		}
+	}*/
+	//if (CharacterWidget != nullptr)
+	//{
+	//	CharacterWidget->BindCharacterStat(CharacterStat);
+	//}
 }
 
 float AABCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

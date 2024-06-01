@@ -47,11 +47,7 @@ void UABCharacterStatComponent::SetNewLevel(int newLevel)
 void UABCharacterStatComponent::SetDamage(float NewDamage)
 {
 	ABCHECK(CurrentStatData != nullptr);
-	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP);
-	if (CurrentHP <= 0)
-	{
-		OnHPIsZero.Broadcast();
-	}
+	SetHp(FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHP));
 }
 
 float UABCharacterStatComponent::GetAttack()
