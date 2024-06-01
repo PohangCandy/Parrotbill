@@ -26,10 +26,10 @@ void UABCharacterStatComponent::BeginPlay()
 void UABCharacterStatComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
-	SetLevel(level);
+	SetNewLevel(level);
 }
 
-void UABCharacterStatComponent::SetLevel(int newLevel)
+void UABCharacterStatComponent::SetNewLevel(int newLevel)
 {
 	auto ABGameInstance = Cast<UABGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	ABCHECK(ABGameInstance != nullptr)
@@ -37,7 +37,7 @@ void UABCharacterStatComponent::SetLevel(int newLevel)
 	if (CurrentStatData != nullptr)
 	{
 		level = newLevel;
-		CurrentHP = CurrentStatData->MaxHP;
+		SetHp(CurrentStatData->MaxHP);
 	}
 	else {
 		ABLOG(Error, TEXT("Leval ( %d ) does not exist."), newLevel);

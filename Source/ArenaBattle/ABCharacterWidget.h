@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ArenaBattle.h"
 #include "Blueprint/UserWidget.h"
+#include "ABCharacterStatComponent.h"
 #include "ABCharacterWidget.generated.h"
 
 /**
@@ -13,5 +14,11 @@ UCLASS()
 class ARENABATTLE_API UABCharacterWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	void BindCharacterStat(class UABCharacterStatComponent* NewCharacterStat);
+
+private:
+	TWeakObjectPtr<class UABCharacterStatComponent> currentCharacterStat;
 	
 };

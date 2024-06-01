@@ -29,7 +29,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void SetLevel(int newLevel);
+	void SetNewLevel(int newLevel);
 	void SetDamage(float NewDamage);
 	float GetAttack();
 	void SetHp(float NewHp);

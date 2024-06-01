@@ -3,3 +3,18 @@
 
 #include "ABCharacterWidget.h"
 
+void UABCharacterWidget::BindCharacterStat(UABCharacterStatComponent* NewCharacterStat)
+{
+	ABCHECK(NewCharacterStat != nullptr);
+
+	currentCharacterStat = NewCharacterStat;
+
+	NewCharacterStat->OnHPChanged.AddLambda([this]()->void {
+	if (currentCharacterStat.IsValid())
+	{
+		ABLOG(Warning, TEXT(" HPRatio : %f "), currentCharacterStat->GetHpRatio());
+	}
+	});
+
+}
+
